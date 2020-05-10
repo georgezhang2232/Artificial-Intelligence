@@ -11,6 +11,7 @@ import policies
 from dqn import DQNPolicy
 from tabular import TabQPolicy
 
+
 def hyperparameters():
     """
     These are the hyperparameters that you can change
@@ -34,14 +35,14 @@ def rollout(env: gym.Env, policies: policies.QPolicy, episodes: int, temp: float
     Simulates trajectories for the given number of episodes. Input policy is used to sample actions at each time step
 
     :param env: the gym environment
-    :param policies: The policy used to sample actions (Tabular/DQN) 
+    :param policies: The policy used to sample actions (Tabular/DQN)
     :param episodes: Number of episodes to be simulated
     :param epsilon: The exploration parameter for epsilon-greedy policy
     :param gamma: Discount factor
     :param render: If True, render the environment
-    
+
     :return replay: Collection of (state, action, reward, next_state, done) at each timestep of all simulated episodes
-    :return scores: Collection of total reward for each simulated episode  
+    :return scores: Collection of total reward for each simulated episode
     """
     replay = []
     scores = []
@@ -55,7 +56,7 @@ def rollout(env: gym.Env, policies: policies.QPolicy, episodes: int, temp: float
                 env.render()
             pi = policies(state, temp)
             # How do you select the action given pi. Hint: use np.random.choice
-            action = #TODO: fill in this line
+            action = int(np.random.choice([0, 1, 2], p=pi))
             next_state, reward, done, _ = env.step(action)
             score += reward
             replay.append((state, action, reward, next_state, done))
@@ -105,4 +106,4 @@ def qlearn(env, policy, args):
         smoothed_score = np.mean(all_scores[-200:])
         pbar.set_postfix_str("Mean Rewards Per Episode: {:.1f} | {:.3f} MSE | Replay Size: {}"
                              .format(smoothed_score, np.mean(losses), len(replaymem)))
-        epsilon = max(args.epsilon_min, epsilon*np.exp(-args.epsilon_decay_factor*(i+1)))
+        epsilon = max(args.epsilon_min, epsilon * np.exp(-args.epsilon_decay_factor * (i + 1)))
